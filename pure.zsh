@@ -547,6 +547,22 @@ prompt_pure_state_setup() {
 	)
 }
 
+# Customization
+#
+if [ -n "$RANGER_LEVEL" ]; then RANGERPROMPT='R'; else RANGERPROMPT=''; fi
+function prompt_ranger() {
+  echo "%F{red}${RANGERPROMPT}%f"
+}
+
+EMOJI=(💩 🐦 🚀 🐞 🎨 🍕 🐭 👽 ☕️ 🔬 💀 🐷 🐼 🐶 🐸 🐧 🐳 🍔 🍣 🍻 🔮 💰 💎 💾 💜 🍪 🌞 🌍 🐌 🐓 🍄 )
+
+function random_emoji {
+  echo -n "$EMOJI[$RANDOM%$#EMOJI+1] "
+}
+prompt_pure_render_custom() {
+  preprompt+=("$(prompt_ranger)$(random_emoji)")
+}
+
 prompt_pure_setup() {
 	# Prevent percentage showing up if output doesn't end with a newline.
 	export PROMPT_EOL_MARK=''
@@ -586,8 +602,11 @@ prompt_pure_setup() {
 		add-zle-hook-widget zle-keymap-select prompt_pure_update_vim_prompt_widget
 	fi
 
+  # Ranger indicator and random emoji
+  PROMPT="$(prompt_ranger)$(random_emoji)"
+
 	# if a virtualenv is activated, display it in grey
-	PROMPT='%(12V.%F{242}%12v%f .)'
+	PROMPT+='%(12V.%F{242}%12v%f .)'
 
 	# prompt turns red if the previous command didn't exit with 0
 	PROMPT+='%(?.%F{magenta}.%F{red})${prompt_pure_state[prompt]}%f '
